@@ -1,0 +1,62 @@
+[
+  {
+    "id": "prd-iphone15pro",
+    "category": "Smartphones",
+    "text": "iPhone 15 Pro features the A17 Pro chip, titanium design, and a 48MP camera system with a 6.1-inch Super Retina XDR display. Available in 256GB, 512GB, and 1TB storage options. Price starts at ₹134,900. Supports USB-C, Action Button, and always-on display."
+  },
+  {
+    "id": "prd-galaxy-s24",
+    "category": "Smartphones",
+    "text": "Samsung Galaxy S24 comes with Galaxy AI features, a Dynamic AMOLED 2X display at 6.2 inches, Exynos 2400 processor, 128GB storage, 50MP triple camera, and 4000mAh battery. Priced at ₹79,999. Includes Circle to Search, Live Translate, and AI-powered photo editing."
+  },
+  {
+    "id": "prd-sony-xm5",
+    "category": "Audio",
+    "text": "Sony WH-1000XM5 headphones offer industry-leading noise cancellation with Auto NC Optimizer, 30-hour battery life, 30mm drivers, multipoint connection, and weigh just 250g. Priced at ₹29,990. Features Speak-to-Chat and Quick Attention mode."
+  },
+  {
+    "id": "prd-macbook-air-m3",
+    "category": "Laptops",
+    "text": "MacBook Air M3 features the Apple M3 chip, 15.3-inch Liquid Retina display, 8GB unified memory, 256GB SSD, and up to 18 hours of battery life. Priced at ₹114,900. Supports up to two external displays, has MagSafe charging, and fanless design."
+  },
+  {
+    "id": "prd-pixel9pro",
+    "category": "Smartphones",
+    "text": "Google Pixel 9 Pro features the Tensor G4 chip, advanced AI capabilities, 6.3-inch Super Actua display, 50MP triple camera system, and 4700mAh battery. Priced at ₹109,999. Includes Gemini Nano on-device AI, Magic Eraser, and 7 years of OS updates."
+  },
+  {
+    "id": "prd-airpods-pro2",
+    "category": "Audio",
+    "text": "AirPods Pro 2 with H2 chip offer Adaptive Transparency, Personalized Spatial Audio, up to 6 hours of listening with ANC (30 hours with case), USB-C charging, and IP54 water resistance. Priced at ₹24,990."
+  },
+  {
+    "id": "prd-ipad-air",
+    "category": "Tablets",
+    "text": "iPad Air powered by M1 chip features a 10.9-inch Liquid Retina display, 12MP camera, Touch ID, USB-C, and supports Apple Pencil 2nd generation and Magic Keyboard. Available in 64GB and 256GB. Currently out of stock."
+  },
+  {
+    "id": "category-smartphones",
+    "category": "General",
+    "text": "ElectroMart's smartphone collection includes flagship devices from Apple (iPhone 15 Pro), Samsung (Galaxy S24), Google (Pixel 9 Pro), and Nothing (Phone 2a). All smartphones come with a 1-year manufacturer warranty and optional ElectroMart Extended Care plan."
+  },
+  {
+    "id": "category-audio",
+    "category": "General",
+    "text": "ElectroMart's audio category includes premium headphones (Sony WH-1000XM5), true wireless earbuds (AirPods Pro 2), and portable speakers. All audio products include a 1-year warranty and 7-day no-questions-asked return policy."
+  },
+  {
+    "id": "shipping-info",
+    "category": "Policy",
+    "text": "ElectroMart shipping: Standard delivery takes 5-7 business days (free for orders above ₹999). Express delivery takes 2-3 business days (₹149 for orders below ₹4,999, free above). Same-day delivery is available in select metros for ₹299. All orders are insured during transit."
+  },
+  {
+    "id": "warranty-info",
+    "category": "Policy",
+    "text": "ElectroMart warranty coverage: All products include the manufacturer's standard warranty (typically 1 year). ElectroMart Extended Care adds 1 additional year of coverage including accidental damage for smartphones and laptops. Extended Care costs 8% of the product price and must be purchased within 15 days of the original order."
+  },
+  {
+    "id": "payment-options",
+    "category": "Policy",
+    "text": "ElectroMart payment options: Credit/Debit cards, UPI, Net Banking, EMI (no-cost EMI available on select products for 3/6/9/12 months), Buy Now Pay Later (via Simpl, ZestMoney), and Cash on Delivery (up to ₹50,000). All payments are secured with 256-bit SSL encryption."
+  }
+]

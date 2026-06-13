@@ -1,0 +1,62 @@
+[
+  {
+    "id": "faq-returns",
+    "section": "Returns & Refunds",
+    "text": "ElectroMart's return policy: You can return most products within 7 days of delivery for a full refund. Products must be in original packaging with all accessories. Opened software, personalized items, and products with physical damage caused by the customer are not eligible. Refunds are processed within 5-7 business days to the original payment method."
+  },
+  {
+    "id": "faq-exchange",
+    "section": "Returns & Refunds",
+    "text": "ElectroMart's exchange policy: Defective products can be exchanged within 7 days of delivery. For size or color preferences (applicable to accessories), exchanges can be initiated within 7 days. The replacement is shipped within 3-5 business days after the return is received."
+  },
+  {
+    "id": "faq-cancel-order",
+    "section": "Order Management",
+    "text": "How to cancel an order on ElectroMart: Orders in 'Processing' status can be cancelled immediately for a full refund. Orders already 'Shipped' cannot be cancelled but can be refused at delivery or returned within 7 days. Cancelled orders are refunded within 3-5 business days."
+  },
+  {
+    "id": "faq-track-order",
+    "section": "Order Management",
+    "text": "How to track your ElectroMart order: Use your order ID (format: ORD-XXX) to check real-time status. Statuses include Processing (being prepared), Shipped (in transit with carrier tracking), Out for Delivery (arriving today), and Delivered. You'll receive SMS and email updates at each stage."
+  },
+  {
+    "id": "faq-delivery-time",
+    "section": "Shipping",
+    "text": "ElectroMart delivery timelines: Standard delivery is 5-7 business days. Express delivery is 2-3 business days. Same-day delivery (available in Mumbai, Delhi, Bangalore, Hyderabad, Chennai, and Pune) if ordered before 12 PM. Delivery to remote areas may take an additional 2-3 days."
+  },
+  {
+    "id": "faq-cod",
+    "section": "Payments",
+    "text": "Cash on Delivery (COD) on ElectroMart: Available for orders up to ₹50,000. A COD fee of ₹49 applies to orders below ₹999. COD is not available for same-day delivery or pre-order items. Pay with cash or UPI at the time of delivery."
+  },
+  {
+    "id": "faq-emi",
+    "section": "Payments",
+    "text": "EMI options at ElectroMart: No-cost EMI is available on select products for 3, 6, 9, or 12 months with partnered banks (HDFC, ICICI, SBI, Axis, Kotak). Standard EMI is available on all credit cards. Minimum order value for EMI is ₹3,000. EMI conversion happens at checkout."
+  },
+  {
+    "id": "faq-warranty-claim",
+    "section": "Warranty",
+    "text": "How to claim warranty at ElectroMart: Contact our support team with your order ID and a description of the issue. For manufacturer warranty claims, you may need to visit an authorized service center. ElectroMart Extended Care claims are handled directly — we arrange pickup and repair/replacement within 7-10 business days."
+  },
+  {
+    "id": "faq-account-security",
+    "section": "Account",
+    "text": "ElectroMart account security: Enable two-factor authentication (2FA) for added protection. We never ask for your password or OTP via phone or email. If you suspect unauthorized access, change your password immediately and contact support. All payment data is tokenized and never stored on our servers."
+  },
+  {
+    "id": "faq-loyalty",
+    "section": "Rewards",
+    "text": "ElectroMart Rewards Program: Earn 1 point per ₹100 spent. Points can be redeemed as discount on future orders (100 points = ₹50 off). Gold members (₹50,000+ annual spend) get double points, early access to sales, and free express delivery on all orders."
+  },
+  {
+    "id": "faq-price-match",
+    "section": "Pricing",
+    "text": "ElectroMart Price Match Guarantee: If you find a lower price for the same product (same model, color, storage) on Amazon.in or Flipkart within 7 days of purchase, we'll refund the difference. Submit a screenshot of the competitor price to support. Excludes flash sales and limited-time offers."
+  },
+  {
+    "id": "faq-international",
+    "section": "Shipping",
+    "text": "ElectroMart currently ships within India only. International shipping is not available. For Indian addresses, we deliver to all serviceable pin codes. Check serviceability by entering your pin code at checkout."
+  }
+]
