@@ -1,16 +1,3 @@
-"""
-order_tools.py — Order management tools for eComBot
------------------------------------------------------
-Day 03: Mock data with @tool decorator + session state.
-Day 04: Upgraded to PostgreSQL-backed queries.
-
-Tools:
-  get_order_status(order_id)  → order details
-  cancel_order(order_id)      → cancel an order
-  save_customer_name(name)    → store name in session
-  get_session_summary()       → return session working memory
-"""
-
 import logging
 import re
 from typing import Any
@@ -19,7 +6,6 @@ from google.adk.tools import ToolContext
 
 log = logging.getLogger(__name__)
 
-# ── Mock data (Day 03 fallback when PostgreSQL is unavailable) ─────────────
 MOCK_ORDERS = {
     "ORD-001": {"order_id": "ORD-001", "customer_name": "Priya Sharma", "product_name": "iPhone 15 Pro", "status": "Shipped", "eta": "15 Jun 2026", "carrier": "BlueDart", "total_amount": 134900.00},
     "ORD-002": {"order_id": "ORD-002", "customer_name": "Ravi Kumar", "product_name": "Samsung Galaxy S24", "status": "Processing", "eta": "18 Jun 2026", "carrier": "DTDC", "total_amount": 79999.00},
@@ -27,8 +13,6 @@ MOCK_ORDERS = {
     "ORD-004": {"order_id": "ORD-004", "customer_name": "John Mathews", "product_name": "MacBook Air M3", "status": "Shipped", "eta": "16 Jun 2026", "carrier": "Delhivery", "total_amount": 114900.00},
     "ORD-005": {"order_id": "ORD-005", "customer_name": "Aisha Mehta", "product_name": "iPad Air", "status": "Cancelled", "eta": None, "carrier": None, "total_amount": 59900.00},
 }
-
-# ── Helpers ────────────────────────────────────────────────────────────────
 
 _ORDER_ID_PATTERN = re.compile(r"^ORD-\d{3,}$", re.IGNORECASE)
 
@@ -38,7 +22,6 @@ def _is_valid_order_id(order_id: str) -> bool:
 
 
 def _try_db_query(query: str, params=None):
-    """Attempt a PostgreSQL query; return None if DB is unavailable."""
     try:
         from src.services.db import query_one
         return query_one(query, params)
@@ -48,7 +31,6 @@ def _try_db_query(query: str, params=None):
 
 
 def _try_db_execute(query: str, params=None):
-    """Attempt a PostgreSQL execute; return None if DB is unavailable."""
     try:
         from src.services.db import execute
         return execute(query, params)
@@ -57,7 +39,6 @@ def _try_db_execute(query: str, params=None):
         return None
 
 
-# ── Order Tools ────────────────────────────────────────────────────────────
 
 def get_order_status(
     order_id: str,
@@ -81,11 +62,9 @@ def get_order_status(
     if not _is_valid_order_id(oid):
         return {"found": False, "error": f"Invalid order ID format: '{oid}'. Order IDs look like ORD-001, ORD-002, etc."}
 
-    # Try PostgreSQL first (Day 04)
     row = _try_db_query("SELECT * FROM orders WHERE order_id = %s", (oid,))
 
     if row is not None:
-        # DB query succeeded
         tool_context.state["current_order_id"] = oid
         tool_context.state["current_customer_name"] = row.get("customer_name", "")
         tool_context.state["last_intent"] = "order_status"
@@ -101,7 +80,6 @@ def get_order_status(
             "total_amount": float(row["total_amount"]) if row.get("total_amount") else None,
         }
 
-    # Fallback to mock data (Day 03)
     if oid in MOCK_ORDERS:
         order = MOCK_ORDERS[oid]
         tool_context.state["current_order_id"] = oid
@@ -130,7 +108,6 @@ def cancel_order(
     Returns:
         A dict indicating success or the reason cancellation failed.
     """
-    # Resolve "current" from session state
     if not order_id or order_id.strip().lower() in ("", "current"):
         order_id = tool_context.state.get("current_order_id", "")
 
@@ -145,7 +122,6 @@ def cancel_order(
     if not _is_valid_order_id(oid):
         return {"cancelled": False, "error": f"Invalid order ID format: '{oid}'."}
 
-    # Try PostgreSQL (Day 04)
     row = _try_db_query("SELECT status, customer_name FROM orders WHERE order_id = %s", (oid,))
 
     if row is not None:
@@ -174,7 +150,6 @@ def cancel_order(
             }
         return {"cancelled": False, "error": "Cancellation could not be saved. Please try again."}
 
-    # Fallback to mock data (Day 03)
     if oid in MOCK_ORDERS:
         order = MOCK_ORDERS[oid]
         if order["status"].lower() == "cancelled":
@@ -202,7 +177,6 @@ def cancel_order(
     return {"cancelled": False, "order_id": oid, "error": f"Order '{oid}' not found."}
 
 
-# ── Session helpers (Day 03) ──────────────────────────────────────────────
 
 def save_customer_name(
     name: str,

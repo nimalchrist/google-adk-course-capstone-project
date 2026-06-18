@@ -1,14 +1,3 @@
-"""
-retriever.py — Semantic search over eComBot's ChromaDB knowledge base
-----------------------------------------------------------------------
-Day 05-06: Retrieves the most relevant chunks for a user query.
-
-Public API:
-    semantic_search(query, top_k=3) → list[dict]
-
-Each result dict contains: {"id", "text", "score", "metadata"}
-"""
-
 import logging
 import os
 
@@ -24,12 +13,10 @@ log = logging.getLogger(__name__)
 EMBEDDING_MODEL = "openrouter/openai/text-embedding-3-small"
 COLLECTION_NAME = "ecombot_kb"
 
-# Singleton collection reference
 _collection: chromadb.Collection | None = None
 
 
 def embed(texts: list[str]) -> list[list[float]]:
-    """Embed a batch of texts via OpenRouter's embedding endpoint."""
     response = litellm.embedding(
         model=EMBEDDING_MODEL,
         input=texts,

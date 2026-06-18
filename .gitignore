@@ -36,6 +36,7 @@ Thumbs.db
 
 # Environment secrets
 .env
+*.env
 
 # ChromaDB local data
 chroma_data/
@@ -44,7 +45,6 @@ chroma_data/
 postgres_data/
 redis_data/
 
-.env
-*.env
-
-*.md
+# Chainlit
+.chainlit/
+chainlit.db

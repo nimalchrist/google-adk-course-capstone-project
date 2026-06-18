@@ -1,16 +1,3 @@
-"""
-inventory_server.py — Inventory/Stock MCP tool server for eComBot
-==================================================================
-Day 08: FastMCP server exposing inventory tools over stdio.
-
-Tools:
-  check_stock(product_id)              → stock level for a product
-  list_variants(product_family)        → available variants/options
-
-Run directly for testing:
-    python inventory_server.py
-"""
-
 import asyncio
 import os
 
@@ -18,7 +5,6 @@ from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("ecombot-inventory", log_level="WARNING")
 
-# ── Mock inventory data ─────────────────────────────────────────────────────
 _INVENTORY: dict[str, dict] = {
     "PRD-101": {
         "product_id": "PRD-101",
@@ -112,7 +98,6 @@ async def check_stock(product_id: str) -> dict:
         A dict with product_id, name, total stock, availability status,
         and variant-level stock. Returns error if product not found.
     """
-    # Simulate network delay (configurable for timeout testing)
     delay = float(os.getenv("INVENTORY_SEARCH_DELAY_SECONDS", "0"))
     if delay > 0:
         await asyncio.sleep(delay)

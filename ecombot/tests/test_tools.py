@@ -1,6 +1,3 @@
-"""
-test_tools.py — Quick integration test for eComBot tools (mock data only)
-"""
 import sys
 sys.path.insert(0, '.')
 

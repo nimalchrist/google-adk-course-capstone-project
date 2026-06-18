@@ -1,14 +1,3 @@
-"""
-product_tools.py — Product lookup and stock tools for eComBot
---------------------------------------------------------------
-Day 04: PostgreSQL-backed product queries.
-Day 05-06: Also supports RAG-grounded answers for product questions.
-
-Tools:
-  lookup_product(product_name)  → search product by name
-  check_stock(product_id)       → check stock availability
-"""
-
 import logging
 from typing import Any
 
@@ -16,7 +5,6 @@ from google.adk.tools import ToolContext
 
 log = logging.getLogger(__name__)
 
-# ── Mock data (fallback when PostgreSQL is unavailable) ────────────────────
 MOCK_PRODUCTS = {
     "PRD-101": {"product_id": "PRD-101", "name": "iPhone 15 Pro", "category": "Smartphones", "price": 134900.00, "stock": 25, "status": "active"},
     "PRD-102": {"product_id": "PRD-102", "name": "Samsung Galaxy S24", "category": "Smartphones", "price": 79999.00, "stock": 40, "status": "active"},
@@ -29,7 +17,6 @@ MOCK_PRODUCTS = {
 
 
 def _try_db_query_all(query: str, params=None):
-    """Attempt a PostgreSQL query_all; return None if DB is unavailable."""
     try:
         from src.services.db import query_all
         return query_all(query, params)
@@ -39,7 +26,6 @@ def _try_db_query_all(query: str, params=None):
 
 
 def _try_db_query_one(query: str, params=None):
-    """Attempt a PostgreSQL query_one; return None if DB is unavailable."""
     try:
         from src.services.db import query_one
         return query_one(query, params)
@@ -48,7 +34,6 @@ def _try_db_query_one(query: str, params=None):
         return None
 
 
-# ── Product Tools ──────────────────────────────────────────────────────────
 
 def lookup_product(
     product_name: str,
@@ -70,7 +55,6 @@ def lookup_product(
 
     name = product_name.strip()
 
-    # Try PostgreSQL (Day 04)
     rows = _try_db_query_all(
         """
         SELECT product_id, name, category, price, stock, description, specs, status
@@ -89,7 +73,6 @@ def lookup_product(
                 "error": f"No products found matching '{name}'. Try a different search term.",
             }
 
-        # Store the first match in session
         tool_context.state["current_product_id"] = rows[0]["product_id"]
         tool_context.state["last_lookup_key"] = name
         tool_context.state["last_intent"] = "product_lookup"
@@ -112,7 +95,7 @@ def lookup_product(
             ],
         }
 
-    # Fallback to mock data
+
     matches = [
         p for p in MOCK_PRODUCTS.values()
         if name.lower() in p["name"].lower() and p["status"] != "inactive"
@@ -172,7 +155,6 @@ def check_stock(
 
     pid = product_id.strip().upper()
 
-    # Try PostgreSQL
     row = _try_db_query_one(
         "SELECT product_id, name, stock, status FROM products WHERE product_id = %s",
         (pid,),
@@ -194,7 +176,6 @@ def check_stock(
             ),
         }
 
-    # Fallback to mock data
     if pid in MOCK_PRODUCTS:
         product = MOCK_PRODUCTS[pid]
         tool_context.state["current_product_id"] = pid

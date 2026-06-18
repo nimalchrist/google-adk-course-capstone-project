@@ -1,18 +1,3 @@
-"""
-history_service.py — Durable conversation history in PostgreSQL
-----------------------------------------------------------------
-Conversation turns are written here after each exchange.
-Separate from ADK's session tables — captures a clean human-readable audit trail.
-
-Boundary:
-  Session state = short-lived working memory (Redis + ADK session)
-  History       = durable, append-only record of every turn (PostgreSQL)
-
-Public API:
-    record_turn(session_id, user_id, role, content, tool_calls)
-    get_history(session_id) → list[dict]
-"""
-
 import json
 import logging
 from typing import Any

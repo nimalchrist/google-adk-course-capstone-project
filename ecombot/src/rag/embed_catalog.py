@@ -1,15 +1,3 @@
-"""
-embed_catalog.py — eComBot Knowledge Base Embedding Script
------------------------------------------------------------
-Day 05-06: Embeds product catalog and FAQ documents into ChromaDB.
-
-Loads data from data/products.json and data/faq.json, embeds them using
-OpenRouter's OpenAI embedding endpoint, and stores in ChromaDB.
-
-Usage:
-    python -m src.rag.embed_catalog    # rebuild the knowledge base
-"""
-
 import json
 import logging
 import os
@@ -30,7 +18,6 @@ DATA_DIR = Path(__file__).parent.parent.parent / "data"
 
 
 def embed(texts: list[str]) -> list[list[float]]:
-    """Embed a batch of texts via OpenRouter's OpenAI-compatible /embeddings endpoint."""
     response = litellm.embedding(
         model=EMBEDDING_MODEL,
         input=texts,

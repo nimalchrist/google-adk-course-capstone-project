@@ -1,17 +1,3 @@
-"""
-db.py — PostgreSQL connection pool for eComBot
-------------------------------------------------
-Provides a thread-safe psycopg2 connection pool shared across all tools.
-Tool functions are synchronous — ADK calls them from its async executor
-via a thread pool.
-
-Public API:
-    query_one(sql, params)  → dict | None
-    query_all(sql, params)  → list[dict]
-    execute(sql, params)    → int  (rowcount)
-    check_connection()      → bool
-"""
-
 import logging
 from contextlib import contextmanager
 from typing import Generator
@@ -44,7 +30,6 @@ def _get_pool() -> pg_pool.ThreadedConnectionPool:
 
 @contextmanager
 def _get_conn() -> Generator:
-    """Lease a connection from the pool; commit on success, rollback on error."""
     pool = _get_pool()
     conn = pool.getconn()
     try:
@@ -58,7 +43,6 @@ def _get_conn() -> Generator:
 
 
 def query_one(sql: str, params=None) -> dict | None:
-    """Execute a SELECT and return the first row as a dict, or None."""
     with _get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(sql, params)
@@ -67,7 +51,6 @@ def query_one(sql: str, params=None) -> dict | None:
 
 
 def query_all(sql: str, params=None) -> list[dict]:
-    """Execute a SELECT and return all rows as a list of dicts."""
     with _get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(sql, params)
@@ -75,7 +58,6 @@ def query_all(sql: str, params=None) -> list[dict]:
 
 
 def execute(sql: str, params=None) -> int:
-    """Execute an INSERT/UPDATE/DELETE; return the affected rowcount."""
     with _get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute(sql, params)
@@ -83,7 +65,6 @@ def execute(sql: str, params=None) -> int:
 
 
 def check_connection() -> bool:
-    """Return True if PostgreSQL is reachable, False otherwise."""
     try:
         with _get_conn() as conn:
             with conn.cursor() as cur:

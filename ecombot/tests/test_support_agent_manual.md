@@ -1,6 +1,6 @@
 # eComBot — Manual Test Notes (Support Agent)
 
-## Day 03: Tool Calling and Session State
+## Tool Calling and Session State
 
 ### Test 1: Valid Order Lookup
 - **Input:** "Where is my order ORD-001?"
@@ -31,7 +31,7 @@
 
 ---
 
-## Day 04: PostgreSQL + Redis Persistence
+## PostgreSQL + Redis Persistence
 
 ### Test 5: Product Lookup
 - **Input:** "Show me the iPhone 15 Pro"
@@ -64,7 +64,7 @@
 
 ---
 
-## Day 08: MCP Integration
+## MCP Integration
 
 ### Test 10: MCP Order Status
 - **Input:** "Check the details on order ORD-001"

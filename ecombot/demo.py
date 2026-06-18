@@ -1,18 +1,3 @@
-"""
-demo.py — eComBot: Interactive demo and scenario runner
-========================================================
-Google ADK · LiteLLM · OpenRouter · ChromaDB · FastMCP
-
-Runs scripted scenarios demonstrating all Day 01-08 features,
-then drops into a free REPL for exploration.
-
-Run:
-    docker compose up -d          # start Postgres + Redis (Day 04)
-    cp .env.example .env          # fill in OPENROUTER_API_KEY
-    python demo.py                # run all scenarios
-    python demo.py --repl         # skip scenarios, go straight to REPL
-"""
-
 import asyncio
 import logging
 import os
@@ -24,7 +9,6 @@ from google.genai import types
 
 load_dotenv()
 
-# ── Silence LiteLLM noise ─────────────────────────────────────────────────
 logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 os.environ.setdefault("LITELLM_LOG", "ERROR")
 for _name in ("LiteLLM", "LiteLLM Router", "LiteLLM Proxy"):
@@ -35,25 +19,23 @@ for _name in ("LiteLLM", "LiteLLM Router", "LiteLLM Proxy"):
 log = logging.getLogger("ecombot-demo")
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
 
-from agent import root_agent, shutdown_orders_server
+from agent import root_agent
 from session import make_runner
+from src.agents.orchestrator import get_delegation_trace, clear_delegation_trace
 
-# ── Scenario guide ─────────────────────────────────────────────────────────
 _GUIDE = """
-  SCENARIO GUIDE — eComBot (Day 01-08 Features)
+  SCENARIO GUIDE — eComBot Multi-Agent Orchestration
   ──────────────────────────────────────────────────────────────────────
-  1  Order status       "Where is my order ORD-001?"
-  2  Follow-up (state)  "What about ORD-002?"          ← session state
-  3  Product lookup     "Show me the iPhone 15 Pro"
-  4  Stock check        "Is the iPad Air in stock?"
-  5  Cancel order       "Cancel order ORD-002"
-  6  RAG / FAQ          "What is your return policy?"
-  7  Out-of-scope       "Write me a Python script"     ← polite refusal
-  8  MCP inventory      "What colors does the Pixel 9 Pro come in?"
+  1  Support routing    "Where is my order ORD-001?"       → Support Agent
+  2  Sales routing      "Recommend a phone under ₹80k"    → Sales Agent
+  3  Mixed intent       "ORD-005 cancelled, suggest alt"   → Support + Sales
+  4  Direct answer      "What can you help me with?"       → Orchestrator
+  5  Cancel order       "Cancel order ORD-002"             → Support Agent
+  6  Product compare    "Compare iPhone 15 Pro vs S24"     → Sales Agent
+  7  FAQ / Policy       "What is your return policy?"      → Support Agent
+  8  Out-of-scope       "Write me a Python script"         → Polite refusal
   ──────────────────────────────────────────────────────────────────────
 """
-
-# ── Console helpers ────────────────────────────────────────────────────────
 
 def _wrap(text: str, width: int = 74) -> str:
     prefix = "    "
@@ -68,10 +50,7 @@ def _build_message(text: str) -> types.Content:
     return types.Content(role="user", parts=[types.Part(text=text)])
 
 
-# ── ADK ask helper ─────────────────────────────────────────────────────────
-
 async def _ask(runner, user_id: str, session_id: str, prompt: str) -> str:
-    """Send a prompt to the agent and return its reply."""
     reply = ""
     async for event in runner.run_async(
         user_id=user_id,
@@ -86,21 +65,18 @@ async def _ask(runner, user_id: str, session_id: str, prompt: str) -> str:
     return reply.strip()
 
 
-# ── Scenarios ──────────────────────────────────────────────────────────────
-
 async def run_scenarios():
-    """Run the scripted demo scenarios."""
     runner, user_id, session_id = await make_runner(root_agent)
 
     scenarios = [
-        ("1 — Order Status", "Hi, my name is Priya. Where is my order ORD-001?"),
-        ("2 — Follow-up (state)", "What about ORD-002?"),
-        ("3 — Product Lookup", "Show me the iPhone 15 Pro"),
-        ("4 — Stock Check", "Is the iPad Air in stock?"),
+        ("1 — Support Routing", "Hi, my name is Priya. Where is my order ORD-001?"),
+        ("2 — Sales Routing", "Can you recommend a good phone under ₹80,000?"),
+        ("3 — Mixed Intent", "My order ORD-005 was cancelled. Can you suggest a similar product that's in stock?"),
+        ("4 — Direct Answer", "What can you help me with?"),
         ("5 — Cancel Order", "Cancel order ORD-002"),
-        ("6 — RAG / FAQ", "What is your return policy?"),
-        ("7 — Out-of-scope", "Write me a Python script to sort a list"),
-        ("8 — MCP Inventory", "What colors does the Pixel 9 Pro come in?"),
+        ("6 — Product Compare", "Compare the iPhone 15 Pro vs Samsung Galaxy S24"),
+        ("7 — FAQ / Policy", "What is your return policy?"),
+        ("8 — Out-of-scope", "Write me a Python script to sort a list"),
     ]
 
     print(_GUIDE)
@@ -110,8 +86,19 @@ async def run_scenarios():
         print(f"    User: {prompt}")
         print()
 
+        clear_delegation_trace()
         reply = await _ask(runner, user_id, session_id, prompt)
         print(_wrap(reply))
+
+        # Show delegation trace
+        trace = get_delegation_trace()
+        if trace:
+            print(f"\n    📊 Trace: ", end="")
+            for t in trace:
+                print(f"[{t['routing_decision']}→{t['agent']} {t['latency_ms']}ms] ", end="")
+            print()
+        else:
+            print(f"\n    📊 Trace: answered directly (no delegation)")
         print()
 
     _sep("═")
@@ -119,10 +106,7 @@ async def run_scenarios():
     return runner, user_id, session_id
 
 
-# ── REPL ───────────────────────────────────────────────────────────────────
-
 async def repl(runner=None, user_id=None, session_id=None):
-    """Interactive REPL for exploring eComBot."""
     if runner is None:
         runner, user_id, session_id = await make_runner(root_agent)
 
@@ -146,8 +130,6 @@ async def repl(runner=None, user_id=None, session_id=None):
     print("\n  Goodbye!\n")
 
 
-# ── Main ───────────────────────────────────────────────────────────────────
-
 async def main():
     if "--repl" in sys.argv:
         await repl()
@@ -161,5 +143,3 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         pass
-    finally:
-        shutdown_orders_server()

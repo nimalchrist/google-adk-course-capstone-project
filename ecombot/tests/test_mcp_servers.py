@@ -1,6 +1,3 @@
-"""
-test_mcp_servers.py — Verify MCP servers start and tools respond correctly
-"""
 import subprocess
 import sys
 import os
@@ -13,7 +10,6 @@ PYTHON = sys.executable
 
 
 def test_orders_server():
-    """Test orders MCP server starts and tools are callable."""
     server_path = os.path.join(MCP_DIR, 'orders_server.py')
     host, port = '127.0.0.1', 18766  # Use non-default port for testing
 
@@ -25,7 +21,6 @@ def test_orders_server():
     )
 
     try:
-        # Wait for server to start
         deadline = time.monotonic() + 5
         started = False
         while time.monotonic() < deadline:
@@ -50,7 +45,6 @@ def test_orders_server():
 
 
 def test_inventory_server_import():
-    """Test inventory server module imports cleanly."""
     import importlib.util
     spec = importlib.util.spec_from_file_location(
         'inventory_server',
@@ -59,7 +53,6 @@ def test_inventory_server_import():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 
-    # Verify tools exist
     assert hasattr(mod, 'check_stock')
     assert hasattr(mod, 'list_variants')
     print('✓ Inventory server module imports OK')

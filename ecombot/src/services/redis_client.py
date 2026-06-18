@@ -1,19 +1,3 @@
-"""
-redis_client.py — Redis connection + session snapshot helpers
---------------------------------------------------------------
-Redis is used as fast working-memory cache:
-  - Session state is snapshotted here with a TTL so it can survive short
-    process restarts without a full DB read.
-  - All Redis errors are caught and logged; the app continues without caching.
-
-Public API:
-    save_session_state(session_id, state)   → None
-    load_session_state(session_id)          → dict | None
-    save_session_ref(user_id, session_id)   → None
-    load_session_ref(user_id)               → str | None
-    check_connection()                      → bool
-"""
-
 import json
 import logging
 
@@ -40,7 +24,6 @@ def _get_redis() -> redis.Redis:
 
 
 def save_session_state(session_id: str, state: dict) -> None:
-    """Snapshot session working memory to Redis with TTL."""
     try:
         key = f"ecombot:state:{session_id}"
         _get_redis().setex(key, settings.redis_session_ttl, json.dumps(state))
@@ -49,7 +32,6 @@ def save_session_state(session_id: str, state: dict) -> None:
 
 
 def load_session_state(session_id: str) -> dict | None:
-    """Load session working memory from Redis. Returns None if unavailable."""
     try:
         raw = _get_redis().get(f"ecombot:state:{session_id}")
         return json.loads(raw) if raw else None
@@ -59,7 +41,6 @@ def load_session_state(session_id: str) -> dict | None:
 
 
 def save_session_ref(user_id: str, session_id: str) -> None:
-    """Store the most recent session_id for a user for recovery."""
     try:
         key = f"ecombot:session_ref:{user_id}"
         _get_redis().setex(key, settings.redis_session_ttl, session_id)
@@ -68,7 +49,6 @@ def save_session_ref(user_id: str, session_id: str) -> None:
 
 
 def load_session_ref(user_id: str) -> str | None:
-    """Return the last active session_id for a user, or None."""
     try:
         return _get_redis().get(f"ecombot:session_ref:{user_id}")
     except redis.RedisError as exc:
@@ -77,7 +57,6 @@ def load_session_ref(user_id: str) -> str | None:
 
 
 def check_connection() -> bool:
-    """Return True if Redis is reachable."""
     try:
         return _get_redis().ping()
     except redis.RedisError:

@@ -1,10 +1,3 @@
-"""
-session.py — Session service factory for eComBot
---------------------------------------------------
-demo.py calls make_runner(agent) to get a Runner + fresh session.
-Supports memory, redis, and database backends via SESSION_BACKEND env var.
-"""
-
 import logging
 import os
 import uuid

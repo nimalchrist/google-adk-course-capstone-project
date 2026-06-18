@@ -1,13 +1,3 @@
-"""
-session_service.py — Session service factory for eComBot
----------------------------------------------------------
-Day 04: Supports three session backends, selected via SESSION_BACKEND env var:
-
-    SESSION_BACKEND=memory    — InMemorySessionService  (default, no persistence)
-    SESSION_BACKEND=redis     — RedisSessionService     (Redis only)
-    SESSION_BACKEND=database  — DatabaseSessionService  (PostgreSQL)
-"""
-
 import logging
 import os
 import uuid
@@ -24,10 +14,6 @@ APP_NAME = "ecombot"
 
 
 def get_session_service():
-    """
-    Return the active session service based on SESSION_BACKEND env var.
-    Defaults to 'memory' for easy local testing without infrastructure.
-    """
     backend = os.getenv("SESSION_BACKEND", "memory").lower()
 
     if backend == "memory":
@@ -61,10 +47,6 @@ async def make_runner(
     user_id: str | None = None,
     session_id: str | None = None,
 ) -> tuple[Runner, str, str]:
-    """
-    Wrap an agent in a Runner with a session.
-    Returns (runner, user_id, session_id).
-    """
     session_service = get_session_service()
     runner = Runner(agent=agent, app_name=APP_NAME, session_service=session_service)
 

@@ -1,18 +1,3 @@
-"""
-orders_server.py — Order Management MCP tool server for eComBot
-================================================================
-Day 08: FastMCP server exposing order tools over Streamable HTTP.
-
-Tools:
-  get_order_status(order_id)    → quick status lookup
-  get_order_details(order_id)   → full order record
-  cancel_order(order_id, confirm) → cancel ONE order with confirmation
-
-Run directly:
-    python orders_server.py
-    # serves on http://127.0.0.1:8766/mcp by default
-"""
-
 import os
 
 from mcp.server.fastmcp import FastMCP
@@ -24,7 +9,6 @@ mcp = FastMCP(
     port=int(os.getenv("ORDERS_SERVER_PORT", "8766")),
 )
 
-# ── Mock order data ─────────────────────────────────────────────────────────
 _ORDERS: dict[str, dict] = {
     "ORD-001": {
         "order_id": "ORD-001",

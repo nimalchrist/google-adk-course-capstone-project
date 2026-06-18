@@ -1,34 +1,12 @@
-"""
-router.py — LiteLLM routing and fallback configuration for eComBot
-===================================================================
-Day 07: Route queries by complexity and protect against provider failures.
-
-Two model groups:
-  fast-faq       → lower-latency model for FAQ-style answers
-  deep-support   → stronger model for complex multi-step queries
-
-Fallback routers for resilience testing:
-  fallback_demo_router  — primary is non-existent (error → fallback)
-  timeout_demo_router   — primary has near-zero timeout (timeout → fallback)
-
-Public API:
-    FAST_MODEL, DEEP_MODEL, BACKUP_MODEL
-    classify_query(prompt) → "fast-faq" | "deep-support"
-    routing_log  — list of routing events for observability
-    enable_routing_callbacks()
-"""
-
 import os
 
 import litellm
 from litellm import Router
 
-# ── Model identifiers (single source of truth) ─────────────────────────────
-FAST_MODEL = "openrouter/google/gemini-2.5-flash"       # fast, cost-effective
-DEEP_MODEL = "openrouter/google/gemini-2.5-pro"         # stronger reasoning
-BACKUP_MODEL = "openrouter/openai/gpt-4o-mini"          # cross-provider fallback
+FAST_MODEL = "openrouter/google/gemini-2.5-flash"
+DEEP_MODEL = "openrouter/google/gemini-2.5-pro"
+BACKUP_MODEL = "openrouter/openai/gpt-4o-mini"
 
-# ── Routing event capture ──────────────────────────────────────────────────
 routing_log: list[dict] = []
 
 
@@ -55,14 +33,11 @@ def _on_failure(kwargs, completion_response, start_time, end_time) -> None:
 
 
 def enable_routing_callbacks() -> None:
-    """Attach routing event callbacks to litellm. Call once at startup."""
     if _on_success not in litellm.success_callback:
         litellm.success_callback.append(_on_success)
     if _on_failure not in litellm.failure_callback:
         litellm.failure_callback.append(_on_failure)
 
-
-# ── Router factory ─────────────────────────────────────────────────────────
 
 def _params(model: str, timeout: float = 30.0) -> dict:
     return {
@@ -93,18 +68,15 @@ def _make_router(
     )
 
 
-# ── Named routers ─────────────────────────────────────────────────────────
 faq_router = _make_router(FAST_MODEL, BACKUP_MODEL)
 support_router = _make_router(DEEP_MODEL, BACKUP_MODEL)
 
-# Fallback demo: primary model doesn't exist → fallback fires
 fallback_demo_router = _make_router(
     primary="openrouter/google/bad-model-xyz",
     backup=BACKUP_MODEL,
     num_retries=1,
 )
 
-# Timeout demo: near-zero timeout → timeout → fallback
 timeout_demo_router = _make_router(
     primary=DEEP_MODEL,
     backup=BACKUP_MODEL,
@@ -112,8 +84,6 @@ timeout_demo_router = _make_router(
     num_retries=0,
 )
 
-
-# ── Query classifier ───────────────────────────────────────────────────────
 
 _DEEP_SIGNALS = {
     "compare", "comparison", "recommend", "recommendation", "which is better",
@@ -124,11 +94,6 @@ _DEEP_SIGNALS = {
 
 
 def classify_query(prompt: str) -> str:
-    """
-    Return 'fast-faq' or 'deep-support' based on prompt content.
-    Simple keyword-based classification — in production this runs at
-    the gateway as a pre-call hook.
-    """
     lower = prompt.lower()
     if any(sig in lower for sig in _DEEP_SIGNALS):
         return "deep-support"

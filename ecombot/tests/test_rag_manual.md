@@ -1,6 +1,6 @@
 # eComBot — RAG Manual Test Notes
 
-## Day 05-06: RAG with ChromaDB and Hallucination Guards
+## RAG with ChromaDB and Hallucination Guards
 
 ### Test 1: Clean Match — Return Policy
 - **Query:** "What is your return policy?"
